@@ -1,0 +1,12 @@
+/bin/
+/obj/
+/preview/bin/
+.vs/
+*.user
+*.suo
+*.log
+.env
+.env.*
+!.env.example
+AccountBrowser/
+Runtime/

@@ -1,0 +1,5 @@
+# Preserve exact file bytes for the source SHA-256 manifest on every checkout.
+* -text
+* whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Preserve vendor licence/notices exactly as supplied.
+lib/WebView2/** -whitespace
