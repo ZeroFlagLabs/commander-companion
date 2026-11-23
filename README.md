@@ -48,7 +48,7 @@ Pin the EXE to your taskbar if wanted. The title bar supports minimise, with max
 
 ## About and updates
 
-The **ⓘ** button opens version information, credits, embedded licence notices and GitHub updates. **Check for updates at launch** is a saved option, enabled initially. Checks read public stable-release metadata without a GitHub login. A newer version enables **Open GitHub release** in your browser. Nothing is downloaded or installed automatically.
+The **ⓘ** button opens version information, credits, readable embedded licence notices and GitHub updates. **Check for updates at launch** is a saved option, enabled initially. Checks read this project's small public `updates/latest.json` file without a GitHub login or the shared GitHub REST API allowance. **Open GitHub release** always opens the latest release page, including when a check fails or your version is current. Nothing is downloaded or installed automatically. The status-to-button and button-to-Close spacing stays equal even when a message wraps.
 
 <img src="docs/images/about.png" alt="Compact About and updates window" width="466">
 
@@ -90,7 +90,7 @@ docs/images/    Illustrative screenshots
 preview/        Optional sample-data UI preview source
 ```
 
-Source filenames retain the development prefix `Remote_Desktop_Commander_Launcher`. Product identity and the repository are centralised in `src/App/Remote_Desktop_Commander_Launcher.AppInfo.cs`. Assembly and manifest versions are **1.0.0**. Release tags use `vMAJOR.MINOR.PATCH`.
+Source filenames retain the development prefix `Remote_Desktop_Commander_Launcher`. Product identity and the repository are centralised in `src/App/Remote_Desktop_Commander_Launcher.AppInfo.cs`. Assembly and manifest versions are **1.0.1**. Release tags use `vMAJOR.MINOR.PATCH`.
 
 Run `build.cmd -VerifyHashes` to verify source, assets, documentation and included SDK files against `SHA256SUMS.txt`. Build outputs, temporary files and Git metadata are excluded. Use `-HashesOnly` after intentional changes without compiling. The downloadable EXE's separate checksum is on its release page. Checksums are not digital signatures.
 

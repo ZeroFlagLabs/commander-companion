@@ -115,8 +115,17 @@ if (-not $HashesOnly) {
         $core = Join-Path $webViewRoot 'Microsoft.Web.WebView2.Core.dll'
         $forms = Join-Path $webViewRoot 'Microsoft.Web.WebView2.WinForms.dll'
         $notices = Join-Path $objectRoot 'Notices.txt'
-        $noticeParts = @('LICENSE', 'THIRD_PARTY_NOTICES.md', 'lib\WebView2\LICENSE.txt', 'lib\WebView2\NOTICE.txt') |
-            ForEach-Object { $_ + [Environment]::NewLine + ('=' * 72) + [Environment]::NewLine + [IO.File]::ReadAllText((Join-Path $projectRoot $_)) }
+        # Convert only our Markdown overview for the native notice viewer.
+        # The application/Microsoft licence texts are retained verbatim.
+        $summary = [IO.File]::ReadAllText((Join-Path $projectRoot 'THIRD_PARTY_NOTICES.md'))
+        $summary = [regex]::Replace($summary, '(?m)^# Third-party components\r?\n', '').Replace('**', '').Replace([string][char]96, '').Trim()
+        $sections = @(
+            @{ Title='Commander Companion — application licence'; Text=[IO.File]::ReadAllText((Join-Path $projectRoot 'LICENSE')) },
+            @{ Title='Bundled components'; Text=$summary },
+            @{ Title='Microsoft WebView2 SDK — licence'; Text=[IO.File]::ReadAllText((Join-Path $projectRoot 'lib\WebView2\LICENSE.txt')) },
+            @{ Title='Microsoft WebView2 SDK — third-party notices'; Text=[IO.File]::ReadAllText((Join-Path $projectRoot 'lib\WebView2\NOTICE.txt')) }
+        )
+        $noticeParts = $sections | ForEach-Object { $_.Title + [Environment]::NewLine + ('=' * 72) + [Environment]::NewLine + $_.Text }
         [IO.File]::WriteAllText($notices, ($noticeParts -join ([Environment]::NewLine + [Environment]::NewLine)), $utf8)
         $payload = @(
             "/resource:$core,Payload.Core",

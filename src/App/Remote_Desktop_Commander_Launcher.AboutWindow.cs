@@ -9,8 +9,10 @@ internal sealed class AboutWindow : Form
     private readonly ReleaseChecker updates;
     private readonly Label updateStatus = new Label();
     private readonly Button check = new Button(), download = new Button();
+    private readonly Button close;
     private readonly CheckBox checkOnLaunch = new CheckBox();
     private bool loading;
+    private bool arrangingUpdates;
 
     internal AboutWindow(ReleaseChecker checker)
     {
@@ -65,7 +67,9 @@ internal sealed class AboutWindow : Form
                 MessageBox.Show(this, "The update preference could not be saved.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         };
-        updateStatus.SetBounds(24, 271, 412, 32);
+        updateStatus.AutoSize = true;
+        updateStatus.MaximumSize = new Size(412, 0);
+        updateStatus.Location = new Point(24, 271);
         updateStatus.ForeColor = Color.DimGray;
         updateStatus.AccessibleName = "Update check status";
         check.Text = "Check for updates";
@@ -73,8 +77,8 @@ internal sealed class AboutWindow : Form
         check.Click += async delegate { await updates.CheckAsync(); };
         download.Text = "Open GitHub release";
         download.SetBounds(227, 309, 209, 33);
-        download.Click += delegate { if (updates.Result.UpdateAvailable) OpenLink(this, updates.Result.Url); };
-        var close = new Button { Text = "Close", DialogResult = DialogResult.Cancel, Bounds = new Rectangle(348, 354, 88, 30) };
+        download.Click += delegate { OpenLink(this, AppInfo.ReleasesUrl); };
+        close = new Button { Text = "Close", DialogResult = DialogResult.Cancel, Bounds = new Rectangle(348, 354, 88, 30) };
         CancelButton = close;
         Controls.AddRange(new Control[] { picture, heading, version, description, credits, project, licences, rule,
             checkOnLaunch, updateStatus, check, download, close });
@@ -88,7 +92,27 @@ internal sealed class AboutWindow : Form
     {
         updateStatus.Text = updates.Result.Status;
         check.Enabled = !updates.Checking;
-        download.Enabled = !updates.Checking && updates.Result.UpdateAvailable;
+        ArrangeUpdateControls();
+    }
+
+    protected override void OnLayout(LayoutEventArgs e)
+    {
+        base.OnLayout(e);
+        ArrangeUpdateControls();
+    }
+
+    private void ArrangeUpdateControls()
+    {
+        if (arrangingUpdates || close == null || check.Parent == null) return;
+        arrangingUpdates = true;
+        try {
+            int gap = (int)System.Math.Round(12 * DeviceDpi / 96F);
+            updateStatus.MaximumSize = new Size(ClientSize.Width - 2 * updateStatus.Left, 0);
+            check.Top = download.Top = updateStatus.Bottom + gap;
+            close.Top = check.Bottom + gap;
+            ClientSize = new Size(ClientSize.Width, close.Bottom + (int)System.Math.Round(19 * DeviceDpi / 96F));
+        }
+        finally { arrangingUpdates = false; }
     }
 
     private static void OpenLink(IWin32Window owner, string url)

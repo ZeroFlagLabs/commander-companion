@@ -1,12 +1,14 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Cache;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 
-// Checks public stable-release metadata only. It never downloads or installs software.
+// Reads our small public version file, avoiding GitHub REST API quotas shared
+// across apps on the same internet connection. Never downloads/installs software.
 internal sealed class ReleaseChecker : IDisposable
 {
     private const string PreferencesKey = @"Software\ZeroFlagLabs\CommanderCompanion";
@@ -61,10 +63,10 @@ internal sealed class ReleaseChecker : IDisposable
     {
         token.ThrowIfCancellationRequested();
         ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
-        var request = (HttpWebRequest)WebRequest.Create(AppInfo.ReleaseApiUrl);
+        var request = (HttpWebRequest)WebRequest.Create(AppInfo.VersionManifestUrl);
         request.UserAgent = "ZeroFlagLabs-CommanderCompanion/" + AppInfo.VersionText;
-        request.Accept = "application/vnd.github+json";
-        request.Headers["X-GitHub-Api-Version"] = "2022-11-28";
+        request.Accept = "application/json";
+        request.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
         request.AllowAutoRedirect = false;
         request.Timeout = 7000;
         request.ReadWriteTimeout = 7000;
@@ -87,9 +89,9 @@ internal sealed class ReleaseChecker : IDisposable
         catch (WebException error) {
             using (var response = error.Response as HttpWebResponse) {
                 if (response != null && response.StatusCode == HttpStatusCode.NotFound)
-                    return ReleaseInfo.Message("No published GitHub release available yet.");
+                    return ReleaseInfo.Message("Update information is unavailable. You can still open the release page.");
                 if (response != null && ((int)response.StatusCode == 403 || (int)response.StatusCode == 429))
-                    return ReleaseInfo.Message("GitHub could not complete the check. Please try again later.");
+                    return ReleaseInfo.Message("The version file is temporarily unavailable. Please try again later.");
             }
             return Unavailable();
         }
