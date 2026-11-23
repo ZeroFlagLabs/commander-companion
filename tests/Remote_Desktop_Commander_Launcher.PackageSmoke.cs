@@ -113,6 +113,11 @@ internal static class PackageSmoke
                     throw new Exception("Embedded licence notices are incomplete.");
                 if (text.Text.Contains("# Third-party components") || text.Text.Contains("**1.0.4370.26**"))
                     throw new Exception("Markdown formatting leaked into the native licence viewer.");
+                licences.CreateControl(); licences.PerformLayout();
+                var rich = (RichTextBox)text;
+                int separator = rich.Text.IndexOf(new string('=', 72), StringComparison.Ordinal);
+                if (separator < 0 || rich.GetLineFromCharIndex(separator) != rich.GetLineFromCharIndex(separator + 71))
+                    throw new Exception("The licence separator wraps at the default window width.");
                 Save(licences, Path.Combine(output, "licences.png"));
             }
             ((IDisposable)updates).Dispose();

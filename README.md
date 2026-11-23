@@ -90,7 +90,7 @@ docs/images/    Illustrative screenshots
 preview/        Optional sample-data UI preview source
 ```
 
-Source filenames retain the development prefix `Remote_Desktop_Commander_Launcher`. Product identity and the repository are centralised in `src/App/Remote_Desktop_Commander_Launcher.AppInfo.cs`. Assembly and manifest versions are **1.0.1**. Release tags use `vMAJOR.MINOR.PATCH`.
+Source filenames retain the development prefix `Remote_Desktop_Commander_Launcher`. Product identity and the repository are centralised in `src/App/Remote_Desktop_Commander_Launcher.AppInfo.cs`. Assembly and manifest versions are **1.0.2**. Release tags use `vMAJOR.MINOR.PATCH`.
 
 Run `build.cmd -VerifyHashes` to verify source, assets, documentation and included SDK files against `SHA256SUMS.txt`. Build outputs, temporary files and Git metadata are excluded. Use `-HashesOnly` after intentional changes without compiling. The downloadable EXE's separate checksum is on its release page. Checksums are not digital signatures.
 

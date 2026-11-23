@@ -13,7 +13,7 @@ internal sealed class LicenceWindow : Form
         Font = new Font("Segoe UI", 9F);
         AutoScaleDimensions = new SizeF(96F, 96F);
         AutoScaleMode = AutoScaleMode.Dpi;
-        ClientSize = new Size(680, 520);
+        ClientSize = new Size(704, 520);
         MinimumSize = new Size(480, 320);
         StartPosition = FormStartPosition.CenterParent;
         ShowInTaskbar = false;
